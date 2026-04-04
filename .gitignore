@@ -1,2 +1,28 @@
-*.agdai
-MAlonzo/**
+## .NET build artifacts
+bin/
+obj/
+
+## IDE files
+.vs/
+.vscode/
+*.user
+*.suo
+*.userprefs
+*.sln.docstates
+
+## NuGet
+packages/
+*.nupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## Build output
+*.dll
+*.exe
+*.pdb
+*.cache
