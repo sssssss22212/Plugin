@@ -1,2 +1,8 @@
 *.agdai
 MAlonzo/**
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.DotSettings

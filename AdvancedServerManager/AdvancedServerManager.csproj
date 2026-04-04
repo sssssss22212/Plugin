@@ -1,0 +1,72 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>AdvancedServerManager</AssemblyName>
+    <RootNamespace>AdvancedServerManager</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Set this to your SCP:SL server's Managed folder path -->
+    <ScpslManagedDir Condition="'$(ScpslManagedDir)' == ''">$(HOME)/scpsl_server/SCPSL_Data/Managed/</ScpslManagedDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="LabApi">
+      <HintPath>$(ScpslManagedDir)LabApi.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(ScpslManagedDir)Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>$(ScpslManagedDir)Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Mirror">
+      <HintPath>$(ScpslManagedDir)Mirror.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(ScpslManagedDir)UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(ScpslManagedDir)UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>$(ScpslManagedDir)UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="CommandSystem.Core">
+      <HintPath>$(ScpslManagedDir)CommandSystem.Core.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Pooling">
+      <HintPath>$(ScpslManagedDir)Pooling.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="NorthwoodLib">
+      <HintPath>$(ScpslManagedDir)NorthwoodLib.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Interop">
+      <HintPath>$(ScpslManagedDir)Interop.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="YamlDotNet">
+      <HintPath>$(ScpslManagedDir)YamlDotNet.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>
