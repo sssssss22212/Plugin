@@ -38,13 +38,13 @@ namespace UltimateServerToolkit
 
         public override void Enable()
         {
-            Instance = this;
-
             if (!Config.IsEnabled)
             {
                 Logger.Info("[UST] Выключен в конфиге.");
                 return;
             }
+
+            Instance = this;
 
             DataDirectory = Path.Combine(
                 Path.GetDirectoryName(FilePath) ?? Environment.CurrentDirectory,
