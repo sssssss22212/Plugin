@@ -13,17 +13,12 @@ using UltimateServerToolkit.Modules.Whitelist;
 
 namespace UltimateServerToolkit
 {
-    /// <summary>
-    /// Main entry point. Wires up modules, registers the events handler, and exposes
-    /// every service through the static <see cref="Instance"/>.
-    /// </summary>
     public sealed class UstPlugin : Plugin<Config>
     {
         public static UstPlugin Instance { get; private set; }
 
         public override string Name => "UltimateServerToolkit";
-        public override string Description =>
-            "Hardcore RP toolkit: profiles, karma, anti-RDM, whitelist, notes, GM tools, round log.";
+        public override string Description => "Хардкорный РП-набор: профили, карма, анти-RDM, вайтлист, заметки, GM-инструменты, лог раунда.";
         public override string Author => "sssssss22212";
         public override Version Version => new Version(1, 0, 0, 0);
         public override Version RequiredApiVersion => new Version(LabApiProperties.CompiledVersion);
@@ -47,7 +42,7 @@ namespace UltimateServerToolkit
 
             if (!Config.IsEnabled)
             {
-                Logger.Info("[UST] Plugin disabled in config (IsEnabled=false). Doing nothing.");
+                Logger.Info("[UST] Выключен в конфиге.");
                 return;
             }
 
@@ -68,7 +63,7 @@ namespace UltimateServerToolkit
             _events = new EventsHandler(this);
             _events.Register();
 
-            Logger.Info($"[UST] {Name} v{Version} enabled. Data dir: {DataDirectory}");
+            Logger.Info($"[UST] {Name} v{Version} включён. Данные: {DataDirectory}");
         }
 
         public override void Disable()
@@ -79,12 +74,12 @@ namespace UltimateServerToolkit
                 ProfileStore?.SaveAll();
                 RoundLog?.Flush();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Logger.Error($"[UST] Error during disable: {ex}");
+                Logger.Error($"[UST] Ошибка при выключении: {e}");
             }
 
-            Logger.Info("[UST] Plugin disabled.");
+            Logger.Info("[UST] Выключен.");
             Instance = null;
         }
     }

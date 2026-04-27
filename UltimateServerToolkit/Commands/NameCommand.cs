@@ -9,21 +9,21 @@ namespace UltimateServerToolkit.Commands
     {
         public string Command => "rpname";
         public string[] Aliases => new[] { "rname", "name" };
-        public string Description => "Set your RP character name. Usage: .rpname <name>";
+        public string Description => "Установить РП-имя персонажа. Использование: .rpname <имя>";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
         {
             if (!CommandUtil.RequirePlugin(out var plugin, out response)) return false;
-            if (!CommandUtil.RequirePlayer(sender, out var player, out response)) return false;
+            if (!CommandUtil.RequirePlayer(sender, out var p, out response)) return false;
 
             var newName = CommandUtil.Join(arguments).Trim();
-            if (!plugin.Profiles.TrySetName(player, newName, out var error))
+            if (!plugin.Profiles.TrySetName(p, newName, out var err))
             {
-                response = error ?? "Failed to set name.";
+                response = err ?? "Не удалось установить имя.";
                 return false;
             }
 
-            response = $"RP name set to: {newName}";
+            response = $"РП-имя: {newName}";
             return true;
         }
     }
@@ -33,21 +33,21 @@ namespace UltimateServerToolkit.Commands
     {
         public string Command => "bio";
         public string[] Aliases => new[] { "rpbio" };
-        public string Description => "Set your RP bio shown when others use .look. Usage: .bio <text>";
+        public string Description => "Био, которое видят при .look. Использование: .bio <текст>";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
         {
             if (!CommandUtil.RequirePlugin(out var plugin, out response)) return false;
-            if (!CommandUtil.RequirePlayer(sender, out var player, out response)) return false;
+            if (!CommandUtil.RequirePlayer(sender, out var p, out response)) return false;
 
             var text = CommandUtil.Join(arguments).Trim();
-            if (!plugin.Profiles.TrySetBio(player, text, out var error))
+            if (!plugin.Profiles.TrySetBio(p, text, out var err))
             {
-                response = error ?? "Failed to set bio.";
+                response = err ?? "Не удалось установить био.";
                 return false;
             }
 
-            response = string.IsNullOrEmpty(text) ? "Bio cleared." : "Bio updated.";
+            response = string.IsNullOrEmpty(text) ? "Био очищено." : "Био обновлено.";
             return true;
         }
     }
@@ -57,21 +57,21 @@ namespace UltimateServerToolkit.Commands
     {
         public string Command => "rpfaction";
         public string[] Aliases => new[] { "faction" };
-        public string Description => "Set your RP faction/affiliation tag. Usage: .rpfaction <text>";
+        public string Description => "Установить РП-фракцию. Использование: .rpfaction <текст>";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
         {
             if (!CommandUtil.RequirePlugin(out var plugin, out response)) return false;
-            if (!CommandUtil.RequirePlayer(sender, out var player, out response)) return false;
+            if (!CommandUtil.RequirePlayer(sender, out var p, out response)) return false;
 
             var text = CommandUtil.Join(arguments).Trim();
-            if (!plugin.Profiles.TrySetFaction(player, text, out var error))
+            if (!plugin.Profiles.TrySetFaction(p, text, out var err))
             {
-                response = error ?? "Failed to set faction.";
+                response = err ?? "Не удалось установить фракцию.";
                 return false;
             }
 
-            response = string.IsNullOrEmpty(text) ? "Faction cleared." : $"Faction set: {text}";
+            response = string.IsNullOrEmpty(text) ? "Фракция очищена." : $"Фракция: {text}";
             return true;
         }
     }
@@ -81,20 +81,20 @@ namespace UltimateServerToolkit.Commands
     {
         public string Command => "karma";
         public string[] Aliases => new[] { "rpkarma" };
-        public string Description => "Show your current karma and RP record.";
+        public string Description => "Показать карму и РП-статистику.";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
         {
             if (!CommandUtil.RequirePlugin(out var plugin, out response)) return false;
-            if (!CommandUtil.RequirePlayer(sender, out var player, out response)) return false;
+            if (!CommandUtil.RequirePlayer(sender, out var p, out response)) return false;
 
-            var profile = plugin.Profiles.GetOrCreate(player);
+            var prof = plugin.Profiles.GetOrCreate(p);
             response =
-                $"Karma: {profile.Karma}\n" +
-                $"RDM count: {profile.RdmCount}\n" +
-                $"Team kills: {profile.TeamKillCount}\n" +
-                $"RP name: {(profile.HasRpName ? profile.RpName : "(unset)")}\n" +
-                $"First seen: {profile.FirstSeenUtc:yyyy-MM-dd}";
+                $"Карма: {prof.Karma}\n" +
+                $"RDM: {prof.RdmCount}\n" +
+                $"Тимкиллы: {prof.TeamKillCount}\n" +
+                $"РП-имя: {(prof.HasRpName ? prof.RpName : "(не задано)")}\n" +
+                $"С нами с: {prof.FirstSeenUtc:yyyy-MM-dd}";
             return true;
         }
     }

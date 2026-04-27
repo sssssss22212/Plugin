@@ -9,38 +9,32 @@ namespace UltimateServerToolkit.Commands
     {
         public string Command => "me";
         public string[] Aliases => new[] { "rpme" };
-        public string Description => "Roleplay action describing your character. Usage: .me <action>";
+        public string Description => "РП-действие персонажа. Использование: .me <действие>";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
         {
             if (!CommandUtil.RequirePlugin(out var plugin, out response)) return false;
-            if (!plugin.Config.RpCommands.Enabled) { response = "RP commands disabled."; return false; }
-            if (!CommandUtil.RequirePlayer(sender, out var player, out response)) return false;
+            if (!plugin.Config.RpCommands.Enabled) { response = "РП-команды выключены."; return false; }
+            if (!CommandUtil.RequirePlayer(sender, out var p, out response)) return false;
 
             var action = CommandUtil.Join(arguments).Trim();
-            if (string.IsNullOrEmpty(action))
-            {
-                response = "Usage: .me <action>";
-                return false;
-            }
+            if (string.IsNullOrEmpty(action)) { response = "Использование: .me <действие>"; return false; }
 
-            var name = ResolveName(plugin, player);
-            var msg = plugin.Config.RpCommands.MeFormat
-                .Replace("{name}", name)
-                .Replace("{action}", action);
+            var name = ResolveName(plugin, p);
+            var msg = plugin.Config.RpCommands.MeFormat.Replace("{name}", name).Replace("{action}", action);
 
-            CommandUtil.BroadcastNearby(player, plugin.Config.RpCommands.MeRangeMeters, msg);
-            plugin.RoundLog.Append($"ME {player.Nickname}: {action}");
+            CommandUtil.BroadcastNearby(p, plugin.Config.RpCommands.MeRangeMeters, msg);
+            plugin.RoundLog.Append($"ME {p.Nickname}: {action}");
 
-            response = "Action sent.";
+            response = "Отправлено.";
             return true;
         }
 
-        internal static string ResolveName(UstPlugin plugin, LabApi.Features.Wrappers.Player player)
+        internal static string ResolveName(UstPlugin plugin, LabApi.Features.Wrappers.Player p)
         {
-            return plugin.Profiles.TryGet(player.UserId, out var profile) && profile.HasRpName
-                ? profile.RpName
-                : player.DisplayName;
+            return plugin.Profiles.TryGet(p.UserId, out var prof) && prof.HasRpName
+                ? prof.RpName
+                : p.DisplayName;
         }
     }
 }

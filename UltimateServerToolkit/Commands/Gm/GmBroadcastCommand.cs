@@ -10,23 +10,23 @@ namespace UltimateServerToolkit.Commands.Gm
     {
         public string Command => "broadcast";
         public string[] Aliases => new[] { "bc" };
-        public string Description => "Broadcast a server-wide RP message. Usage: gm broadcast <message>";
+        public string Description => "Объявление всем. Использование: gm broadcast <текст>";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
         {
             if (!GmParentCommand.RequireGm(sender, out response)) return false;
-            if (arguments.Count == 0) { response = "Usage: gm broadcast <message>"; return false; }
+            if (arguments.Count == 0) { response = "Использование: gm broadcast <текст>"; return false; }
 
             var msg = string.Join(" ", arguments.Array, arguments.Offset, arguments.Count);
-            var formatted = $"<b><color=#ffd27f>[GM]</color></b> {msg}";
+            var line = $"<b><color=#ffd27f>[GM]</color></b> {msg}";
 
             foreach (var p in Player.ReadyList)
             {
-                try { p.SendBroadcast(formatted, 8, Broadcast.BroadcastFlags.Normal, true); } catch { }
+                try { p.SendBroadcast(line, 8, Broadcast.BroadcastFlags.Normal, true); } catch { }
             }
 
             UstPlugin.Instance?.RoundLog?.Append($"GM_BROADCAST: {msg}");
-            response = "Broadcast sent.";
+            response = "Объявление отправлено.";
             return true;
         }
     }
@@ -36,16 +36,16 @@ namespace UltimateServerToolkit.Commands.Gm
     {
         public string Command => "event";
         public string[] Aliases => new[] { "rpevent" };
-        public string Description => "Stage a Game-Master event hint to all players. Usage: gm event <text>";
+        public string Description => "Объявить РП-событие. Использование: gm event <текст>";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
         {
             if (!GmParentCommand.RequireGm(sender, out response)) return false;
-            if (arguments.Count == 0) { response = "Usage: gm event <text>"; return false; }
+            if (arguments.Count == 0) { response = "Использование: gm event <текст>"; return false; }
 
             var msg = string.Join(" ", arguments.Array, arguments.Offset, arguments.Count);
             var hint =
-                "<size=28><b><color=#ff5555>** GM EVENT **</color></b></size>\n" +
+                "<size=28><b><color=#ff5555>** GM-СОБЫТИЕ **</color></b></size>\n" +
                 "<size=22><i>" + msg + "</i></size>";
 
             foreach (var p in Player.ReadyList)
@@ -54,7 +54,7 @@ namespace UltimateServerToolkit.Commands.Gm
             }
 
             UstPlugin.Instance?.RoundLog?.Append($"GM_EVENT: {msg}");
-            response = "Event posted.";
+            response = "Событие объявлено.";
             return true;
         }
     }
@@ -64,33 +64,33 @@ namespace UltimateServerToolkit.Commands.Gm
     {
         public string Command => "karma";
         public string[] Aliases => Array.Empty<string>();
-        public string Description => "Adjust a player's karma. Usage: gm karma <player> <±amount> [reason...]";
+        public string Description => "Изменить карму игрока. Использование: gm karma <игрок> <±N> [причина]";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
         {
             if (!GmParentCommand.RequireGm(sender, out response)) return false;
-            if (arguments.Count < 2) { response = "Usage: gm karma <player> <±amount> [reason]"; return false; }
+            if (arguments.Count < 2) { response = "Использование: gm karma <игрок> <±N> [причина]"; return false; }
 
             var target = CommandUtil.FindByQuery(arguments.Array[arguments.Offset]);
-            if (target == null) { response = "Target not found."; return false; }
+            if (target == null) { response = "Игрок не найден."; return false; }
 
             if (!int.TryParse(arguments.Array[arguments.Offset + 1], out var delta))
             {
-                response = "Amount must be an integer.";
+                response = "Сумма должна быть целым числом.";
                 return false;
             }
 
             var reason = arguments.Count > 2
                 ? string.Join(" ", arguments.Array, arguments.Offset + 2, arguments.Count - 2)
-                : "GM adjustment";
+                : "GM-правка";
 
             var plugin = UstPlugin.Instance;
-            if (plugin == null) { response = "Plugin not initialized."; return false; }
+            if (plugin == null) { response = "Плагин не инициализирован."; return false; }
 
             if (delta < 0) plugin.Karma.Penalize(target, -delta, reason);
             else plugin.Karma.Reward(target, delta, reason);
 
-            response = $"Adjusted {target.DisplayName}'s karma by {delta} ({reason}).";
+            response = $"Карма {target.DisplayName} изменена на {delta} ({reason}).";
             return true;
         }
     }

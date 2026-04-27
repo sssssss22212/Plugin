@@ -15,16 +15,11 @@ namespace UltimateServerToolkit.Modules.Notes
         public DateTime DroppedAtUtc { get; set; } = DateTime.UtcNow;
     }
 
-    /// <summary>
-    /// In-memory, round-scoped registry of "notes" that players have written and dropped.
-    /// A note is read by anyone within <see cref="ReadRangeMeters"/> of the drop position.
-    /// </summary>
     public sealed class NoteService
     {
         private readonly UstPlugin _plugin;
         private readonly ConcurrentBag<DroppedNote> _notes = new ConcurrentBag<DroppedNote>();
 
-        // Per-author limiter, reset on round.
         private readonly ConcurrentDictionary<string, int> _writesThisRound =
             new ConcurrentDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
@@ -47,26 +42,26 @@ namespace UltimateServerToolkit.Modules.Notes
             var cfg = _plugin.Config.Notes;
             if (!cfg.Enabled)
             {
-                error = "Notes are disabled.";
+                error = "Заметки выключены.";
                 return false;
             }
 
             text = (text ?? string.Empty).Trim();
             if (text.Length == 0)
             {
-                error = "Empty note.";
+                error = "Пустая заметка.";
                 return false;
             }
             if (text.Length > cfg.MaxNoteLength)
             {
-                error = $"Note too long (max {cfg.MaxNoteLength}).";
+                error = $"Слишком длинная заметка (макс {cfg.MaxNoteLength}).";
                 return false;
             }
 
-            var written = _writesThisRound.AddOrUpdate(author.UserId, 1, (_, v) => v + 1);
-            if (written > cfg.MaxNotesPerRound)
+            var n = _writesThisRound.AddOrUpdate(author.UserId, 1, (_, v) => v + 1);
+            if (n > cfg.MaxNotesPerRound)
             {
-                error = $"Too many notes this round ({cfg.MaxNotesPerRound}).";
+                error = $"Слишком много заметок за раунд ({cfg.MaxNotesPerRound}).";
                 return false;
             }
 
@@ -77,7 +72,6 @@ namespace UltimateServerToolkit.Modules.Notes
                 Text = text,
                 Position = author.Position,
             });
-
             return true;
         }
 

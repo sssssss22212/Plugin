@@ -6,7 +6,6 @@ using PlayerRoles;
 
 namespace UltimateServerToolkit.Modules.Whitelist
 {
-    /// <summary>Enforces a UserId-based whitelist on a configurable subset of (usually SCP) roles.</summary>
     public sealed class WhitelistService
     {
         private readonly UstPlugin _plugin;

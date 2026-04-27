@@ -3,27 +3,22 @@ using CommandSystem;
 using LabApi.Features.Wrappers;
 using UnityEngine;
 
-
 namespace UltimateServerToolkit.Commands
 {
     internal static class CommandUtil
     {
-        public static bool RequirePlayer(ICommandSender sender, out Player player, out string error)
+        public static bool RequirePlayer(ICommandSender sender, out Player p, out string error)
         {
-            player = Player.Get(sender);
-            if (player != null) { error = null; return true; }
-            error = "This command can only be used by an in-game player.";
+            p = Player.Get(sender);
+            if (p != null) { error = null; return true; }
+            error = "Команду может вызвать только игрок в игре.";
             return false;
         }
 
         public static bool RequirePlugin(out UstPlugin plugin, out string error)
         {
             plugin = UstPlugin.Instance;
-            if (plugin == null)
-            {
-                error = "UltimateServerToolkit is not loaded.";
-                return false;
-            }
+            if (plugin == null) { error = "Плагин не загружен."; return false; }
             error = null;
             return true;
         }
@@ -35,71 +30,53 @@ namespace UltimateServerToolkit.Commands
             return string.Join(" ", args.Array, args.Offset + startIndex, take);
         }
 
-        public static void BroadcastNearby(Player from, float rangeMeters, string message, float duration = 5f)
+        public static void BroadcastNearby(Player from, float range, string msg, float duration = 5f)
         {
-            if (from == null || string.IsNullOrEmpty(message)) return;
-            var sqr = rangeMeters * rangeMeters;
-            var origin = from.Position;
+            if (from == null || string.IsNullOrEmpty(msg)) return;
+            var sqr = range * range;
+            var pos = from.Position;
 
-            foreach (var other in Player.ReadyList)
+            foreach (var p in Player.ReadyList)
             {
-                if (other == null || !other.IsPlayer) continue;
-                if ((other.Position - origin).sqrMagnitude > sqr) continue;
-
-                try
-                {
-                    other.SendHint(message, duration);
-                }
-                catch
-                {
-                    // ignore
-                }
+                if (p == null || !p.IsPlayer) continue;
+                if ((p.Position - pos).sqrMagnitude > sqr) continue;
+                try { p.SendHint(msg, duration); }
+                catch { }
             }
         }
 
-        public static Player FindNearest(Player from, float maxRangeMeters)
+        public static Player FindNearest(Player from, float range)
         {
             if (from == null) return null;
             Player best = null;
-            var bestSqr = maxRangeMeters * maxRangeMeters;
+            var bestSqr = range * range;
 
-            foreach (var other in Player.ReadyList)
+            foreach (var p in Player.ReadyList)
             {
-                if (other == null || !other.IsPlayer || other.UserId == from.UserId) continue;
-                var d = (other.Position - from.Position).sqrMagnitude;
-                if (d <= bestSqr)
-                {
-                    bestSqr = d;
-                    best = other;
-                }
+                if (p == null || !p.IsPlayer || p.UserId == from.UserId) continue;
+                var d = (p.Position - from.Position).sqrMagnitude;
+                if (d <= bestSqr) { bestSqr = d; best = p; }
             }
             return best;
         }
 
-        public static Player FindByQuery(string query)
+        public static Player FindByQuery(string q)
         {
-            if (string.IsNullOrWhiteSpace(query)) return null;
+            if (string.IsNullOrWhiteSpace(q)) return null;
 
-            // Try playerId, UserId, then DisplayName/Nickname.
-            if (int.TryParse(query, out var id))
-            {
+            if (int.TryParse(q, out var id))
                 foreach (var p in Player.ReadyList)
                     if (p.PlayerId == id) return p;
-            }
 
             foreach (var p in Player.ReadyList)
-            {
-                if (string.Equals(p.UserId, query, StringComparison.OrdinalIgnoreCase)) return p;
-            }
+                if (string.Equals(p.UserId, q, StringComparison.OrdinalIgnoreCase)) return p;
 
-            var byDisplay = Player.GetByDisplayName(query, requireFullMatch: false);
-            if (byDisplay != null) return byDisplay;
+            var byName = Player.GetByDisplayName(q, requireFullMatch: false);
+            if (byName != null) return byName;
 
             foreach (var p in Player.ReadyList)
-            {
-                if (p.Nickname != null && p.Nickname.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                if (p.Nickname != null && p.Nickname.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0)
                     return p;
-            }
 
             return null;
         }

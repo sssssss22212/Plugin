@@ -2,10 +2,6 @@ using System.Collections.Generic;
 
 namespace UltimateServerToolkit
 {
-    /// <summary>
-    /// Plugin configuration. Lives in
-    /// <c>~/.config/SCP Secret Laboratory/LabAPI/configs/&lt;port&gt;/UltimateServerToolkit/config.yml</c>.
-    /// </summary>
     public sealed class Config
     {
         public bool IsEnabled { get; set; } = true;
@@ -24,7 +20,7 @@ namespace UltimateServerToolkit
     public sealed class ProfilesConfig
     {
         public bool Enabled { get; set; } = true;
-        /// <summary>Use the player's RP name as their in-game DisplayName above the head.</summary>
+
         public bool OverrideDisplayName { get; set; } = true;
         public int MinNameLength { get; set; } = 3;
         public int MaxNameLength { get; set; } = 24;
@@ -40,23 +36,23 @@ namespace UltimateServerToolkit
         public int RoundEndBonus { get; set; } = 5;
         public int LowKarmaThreshold { get; set; } = 25;
         public int CriticalKarmaThreshold { get; set; } = 0;
-        /// <summary>If karma drops below this, the player is auto-kicked at round end.</summary>
+
         public bool KickOnCritical { get; set; } = true;
     }
 
     public sealed class AntiRdmConfig
     {
         public bool Enabled { get; set; } = true;
-        /// <summary>Damage between teammates within this many seconds counts as RDM.</summary>
+
         public float TeamDamageWindowSeconds { get; set; } = 2.5f;
         public bool BroadcastWarning { get; set; } = true;
-        public string RdmWarningHint { get; set; } = "<color=#ff5555><b>[RP]</b></color> RDM detected. Karma penalty applied.";
+        public string RdmWarningHint { get; set; } = "<color=#ff5555><b>[РП]</b></color> Засчитан RDM. Карма уменьшена.";
     }
 
     public sealed class WhitelistConfig
     {
         public bool Enabled { get; set; } = false;
-        /// <summary>SCP roles that require an entry in <see cref="AllowedUserIds"/>.</summary>
+
         public List<string> RestrictedRoles { get; set; } = new List<string>
         {
             "Scp079",
@@ -67,9 +63,9 @@ namespace UltimateServerToolkit
             "Scp3114",
             "Scp049",
         };
-        /// <summary>UserIds that may play any restricted role (e.g. <c>76561198000000000@steam</c>).</summary>
+
         public List<string> AllowedUserIds { get; set; } = new List<string>();
-        public string DenyMessage { get; set; } = "<color=#ff5555>SCP role is whitelist-only. Ask an admin.</color>";
+        public string DenyMessage { get; set; } = "<color=#ff5555>Эта SCP-роль только для вайтлиста. Спроси у админа.</color>";
     }
 
     public sealed class NotesConfig
@@ -86,10 +82,10 @@ namespace UltimateServerToolkit
         public float WhisperRangeMeters { get; set; } = 3f;
         public float LookRangeMeters { get; set; } = 12f;
         public string MeFormat { get; set; } = "<color=#FFD27F><i>* {name} {action}</i></color>";
-        public string TryFormat { get; set; } = "<color=#7FBFFF><i>* {name} tries to {action} — <b>{outcome}</b></i></color>";
+        public string TryFormat { get; set; } = "<color=#7FBFFF><i>* {name} пытается {action} — <b>{outcome}</b></i></color>";
         public string DoFormat { get; set; } = "<color=#A0FFA0><i>* {action}</i></color>";
-        public string LookFormat { get; set; } = "<color=#CCCCCC><i>You see {target}: {bio}</i></color>";
-        public string WhisperFormat { get; set; } = "<color=#FFA0FF><i>{name} whispers: {message}</i></color>";
+        public string LookFormat { get; set; } = "<color=#CCCCCC><i>Видишь {target}: {bio}</i></color>";
+        public string WhisperFormat { get; set; } = "<color=#FFA0FF><i>{name} шепчет: {message}</i></color>";
     }
 
     public sealed class RoundLogConfig
@@ -103,7 +99,7 @@ namespace UltimateServerToolkit
     public sealed class GmConfig
     {
         public bool Enabled { get; set; } = true;
-        /// <summary>Players whose UserId can run <c>/gm ...</c> commands without being a Remote Admin.</summary>
+
         public List<string> GameMasterUserIds { get; set; } = new List<string>();
     }
 }

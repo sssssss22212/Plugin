@@ -4,10 +4,6 @@ using LabApi.Events.Handlers;
 
 namespace UltimateServerToolkit
 {
-    /// <summary>
-    /// Single hub that subscribes to LabAPI events on plugin enable and unsubscribes
-    /// on disable. All callbacks dispatch to the appropriate module on <see cref="UstPlugin"/>.
-    /// </summary>
     internal sealed class EventsHandler
     {
         private readonly UstPlugin _plugin;
@@ -47,25 +43,20 @@ namespace UltimateServerToolkit
 
         private void OnJoined(PlayerJoinedEventArgs ev)
         {
-            var profile = _plugin.Profiles.GetOrCreate(ev.Player);
-
+            var prof = _plugin.Profiles.GetOrCreate(ev.Player);
             _plugin.DisplayNames.Apply(ev.Player);
 
             if (_plugin.Config.RoundLog.LogJoinsAndLeaves)
                 _plugin.RoundLog.Append($"JOIN {ev.Player.UserId} '{ev.Player.Nickname}'");
 
-            // Greet with karma + RP name reminder.
             try
             {
-                var rpName = profile.HasRpName ? profile.RpName : "(not set — use .name)";
+                var name = prof.HasRpName ? prof.RpName : "(не задан — .name)";
                 ev.Player.SendHint(
-                    $"<size=24><b>Welcome.</b></size>\nRP name: <color=#ffd27f>{rpName}</color>\nKarma: <b>{profile.Karma}</b>",
+                    $"<size=24><b>Добро пожаловать.</b></size>\nРП-имя: <color=#ffd27f>{name}</color>\nКарма: <b>{prof.Karma}</b>",
                     duration: 6f);
             }
-            catch
-            {
-                // ignore hint failures during connect
-            }
+            catch { }
         }
 
         private void OnLeft(PlayerLeftEventArgs ev)
@@ -88,9 +79,9 @@ namespace UltimateServerToolkit
 
             if (_plugin.Config.RoundLog.LogDeaths)
             {
-                var attacker = ev.Attacker?.Nickname ?? "(none)";
+                var att = ev.Attacker?.Nickname ?? "(нет)";
                 _plugin.RoundLog.Append(
-                    $"DEATH {ev.Player.Nickname} <- {attacker} ({ev.DamageHandler?.GetType().Name})");
+                    $"DEATH {ev.Player.Nickname} <- {att} ({ev.DamageHandler?.GetType().Name})");
             }
         }
 
@@ -99,14 +90,8 @@ namespace UltimateServerToolkit
             if (!_plugin.Whitelist.IsAllowed(ev.Player, ev.NewRole))
             {
                 ev.IsAllowed = false;
-                try
-                {
-                    ev.Player.SendHint(_plugin.Config.Whitelist.DenyMessage, duration: 5f);
-                }
-                catch
-                {
-                    // ignore
-                }
+                try { ev.Player.SendHint(_plugin.Config.Whitelist.DenyMessage, duration: 5f); }
+                catch { }
                 _plugin.RoundLog.Append(
                     $"WHITELIST_DENY {ev.Player.Nickname} -> {ev.NewRole}");
             }

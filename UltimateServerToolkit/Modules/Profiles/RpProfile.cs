@@ -2,10 +2,6 @@ using System;
 
 namespace UltimateServerToolkit.Modules.Profiles
 {
-    /// <summary>
-    /// Persistent per-user RP data. Keyed by <see cref="UserId"/>.
-    /// Stored as YAML in the data directory.
-    /// </summary>
     public sealed class RpProfile
     {
         public string UserId { get; set; } = string.Empty;

@@ -5,10 +5,6 @@ using LabApi.Features.Console;
 
 namespace UltimateServerToolkit.Modules.RoundLog
 {
-    /// <summary>
-    /// Append-only round log writer. One file per round, named by start timestamp.
-    /// Buffers entries in memory and flushes on round end / disable.
-    /// </summary>
     public sealed class RoundLogService
     {
         private readonly UstPlugin _plugin;
@@ -64,9 +60,9 @@ namespace UltimateServerToolkit.Modules.RoundLog
                 File.AppendAllLines(_currentFile, _buffer);
                 _buffer.Clear();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Logger.Error($"[UST/RoundLog] Flush failed: {ex.Message}");
+                Logger.Error($"[UST/Log] Ошибка записи: {e.Message}");
             }
         }
     }

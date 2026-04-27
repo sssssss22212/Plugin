@@ -5,26 +5,22 @@ using CommandSystem;
 
 namespace UltimateServerToolkit.Commands
 {
-    /// <summary>
-    /// .note write &lt;text&gt; — drop a note at your current position.<br/>
-    /// .note read       — read all nearby notes.
-    /// </summary>
     [CommandHandler(typeof(ClientCommandHandler))]
     public sealed class NoteCommand : ICommand
     {
         public string Command => "note";
         public string[] Aliases => new[] { "rpnote" };
-        public string Description => "Drop or read RP notes at your current location.";
+        public string Description => "Оставить или прочитать РП-заметки рядом с собой.";
 
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, [UnscopedRef] out string response)
         {
             if (!CommandUtil.RequirePlugin(out var plugin, out response)) return false;
-            if (!plugin.Config.Notes.Enabled) { response = "Notes disabled."; return false; }
-            if (!CommandUtil.RequirePlayer(sender, out var player, out response)) return false;
+            if (!plugin.Config.Notes.Enabled) { response = "Заметки выключены."; return false; }
+            if (!CommandUtil.RequirePlayer(sender, out var p, out response)) return false;
 
             if (arguments.Count == 0)
             {
-                response = "Usage: .note write <text>  |  .note read";
+                response = "Использование: .note write <текст>  |  .note read";
                 return false;
             }
 
@@ -35,31 +31,29 @@ namespace UltimateServerToolkit.Commands
                 case "drop":
                 {
                     var text = CommandUtil.Join(arguments, 1).Trim();
-                    if (!plugin.Notes.TryDrop(player, text, out var err))
+                    if (!plugin.Notes.TryDrop(p, text, out var err))
                     {
                         response = err;
                         return false;
                     }
-                    plugin.RoundLog.Append($"NOTE_DROP {player.Nickname}: {text}");
-                    response = "Note dropped.";
+                    plugin.RoundLog.Append($"NOTE_DROP {p.Nickname}: {text}");
+                    response = "Заметка оставлена.";
                     return true;
                 }
                 case "read":
                 {
                     var sb = new StringBuilder();
-                    var count = 0;
-                    foreach (var note in plugin.Notes.GetNearby(player.Position))
+                    var n = 0;
+                    foreach (var note in plugin.Notes.GetNearby(p.Position))
                     {
                         sb.AppendLine($"— [{note.AuthorDisplayName}]: {note.Text}");
-                        count++;
+                        n++;
                     }
-                    response = count == 0
-                        ? "No notes nearby."
-                        : $"Notes nearby ({count}):\n{sb}";
+                    response = n == 0 ? "Рядом ничего нет." : $"Заметки рядом ({n}):\n{sb}";
                     return true;
                 }
                 default:
-                    response = "Usage: .note write <text>  |  .note read";
+                    response = "Использование: .note write <текст>  |  .note read";
                     return false;
             }
         }

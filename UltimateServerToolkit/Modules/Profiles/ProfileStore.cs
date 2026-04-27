@@ -8,10 +8,6 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace UltimateServerToolkit.Modules.Profiles
 {
-    /// <summary>
-    /// Loads, caches, and persists <see cref="RpProfile"/>s to a single YAML file.
-    /// All operations are in-memory and flushed on demand or on disable.
-    /// </summary>
     public sealed class ProfileStore
     {
         private readonly string _path;
@@ -38,7 +34,7 @@ namespace UltimateServerToolkit.Modules.Profiles
         public RpProfile GetOrCreate(string userId, string nickname, int startingKarma)
         {
             if (string.IsNullOrEmpty(userId))
-                throw new ArgumentException("UserId required.", nameof(userId));
+                throw new ArgumentException("Нужен UserId.", nameof(userId));
 
             return _byUserId.GetOrAdd(userId, id =>
             {
@@ -68,9 +64,9 @@ namespace UltimateServerToolkit.Modules.Profiles
                 File.WriteAllText(_path, _serializer.Serialize(dump));
                 _dirty = false;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Logger.Error($"[UST/ProfileStore] Failed to save profiles: {ex.Message}");
+                Logger.Error($"[UST/Profiles] Не смог сохранить профили: {e.Message}");
             }
         }
 
@@ -94,9 +90,9 @@ namespace UltimateServerToolkit.Modules.Profiles
                     _byUserId[kvp.Key] = kvp.Value;
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Logger.Warn($"[UST/ProfileStore] Failed to load profiles ({ex.Message}). Starting fresh.");
+                Logger.Warn($"[UST/Profiles] Не смог загрузить профили ({e.Message}). Начинаем с нуля.");
             }
         }
     }

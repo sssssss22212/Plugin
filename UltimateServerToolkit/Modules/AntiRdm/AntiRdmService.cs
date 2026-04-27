@@ -6,15 +6,10 @@ using PlayerRoles;
 
 namespace UltimateServerToolkit.Modules.AntiRdm
 {
-    /// <summary>
-    /// Detects same-team damage/kills with no preceding aggression and applies karma penalties.
-    /// State resets on each round.
-    /// </summary>
     public sealed class AntiRdmService
     {
         private readonly UstPlugin _plugin;
 
-        // Round-scoped: when did we last see Player X being damaged by *anyone* (any team).
         private readonly Dictionary<string, DateTime> _lastDamagedAt =
             new Dictionary<string, DateTime>(StringComparer.OrdinalIgnoreCase);
 
@@ -25,72 +20,57 @@ namespace UltimateServerToolkit.Modules.AntiRdm
 
         public void Reset() => _lastDamagedAt.Clear();
 
-        /// <summary>Called from <see cref="EventsHandler"/> on every Hurting event.</summary>
-        public void OnHurting(Player victim, Player attacker)
+        public void OnHurting(Player vic, Player att)
         {
-            if (!_plugin.Config.AntiRdm.Enabled) return;
-            if (victim == null) return;
+            if (!_plugin.Config.AntiRdm.Enabled || vic == null) return;
 
-            _lastDamagedAt[victim.UserId] = DateTime.UtcNow;
+            _lastDamagedAt[vic.UserId] = DateTime.UtcNow;
 
-            if (attacker == null || attacker.UserId == victim.UserId) return;
-            if (!IsTeamKill(attacker, victim)) return;
+            if (att == null || att.UserId == vic.UserId) return;
+            if (!IsTeamKill(att, vic)) return;
+            if (HasRecentlyAttacked(vic)) return;
 
-            // RDM = team-attack and victim has not damaged anyone recently (no provocation).
-            if (HasRecentlyAttacked(victim)) return;
-
-            _plugin.Karma.Penalize(attacker, _plugin.Config.Karma.RdmPenalty, "Team-damage RDM");
+            _plugin.Karma.Penalize(att, _plugin.Config.Karma.RdmPenalty, "Тимдамаг/RDM");
 
             if (_plugin.Config.AntiRdm.BroadcastWarning)
             {
-                try
-                {
-                    attacker.SendHint(_plugin.Config.AntiRdm.RdmWarningHint, duration: 4f);
-                }
-                catch
-                {
-                    // ignore
-                }
+                try { att.SendHint(_plugin.Config.AntiRdm.RdmWarningHint, duration: 4f); }
+                catch { }
             }
 
-            if (_plugin.Profiles.TryGet(attacker.UserId, out var profile))
+            if (_plugin.Profiles.TryGet(att.UserId, out var prof))
             {
-                profile.RdmCount++;
+                prof.RdmCount++;
                 _plugin.ProfileStore.MarkDirty();
             }
         }
 
-        /// <summary>Called from <see cref="EventsHandler"/> on every Death event.</summary>
-        public void OnDeath(Player victim, Player attacker)
+        public void OnDeath(Player vic, Player att)
         {
             if (!_plugin.Config.AntiRdm.Enabled) return;
-            if (victim == null || attacker == null) return;
-            if (attacker.UserId == victim.UserId) return;
-            if (!IsTeamKill(attacker, victim)) return;
+            if (vic == null || att == null || att.UserId == vic.UserId) return;
+            if (!IsTeamKill(att, vic)) return;
 
-            _plugin.Karma.Penalize(attacker, _plugin.Config.Karma.TeamKillPenalty, "Team kill");
-            Logger.Warn($"[UST/AntiRDM] Team kill: {attacker.Nickname} -> {victim.Nickname}");
+            _plugin.Karma.Penalize(att, _plugin.Config.Karma.TeamKillPenalty, "Тимкилл");
+            Logger.Warn($"[UST/RDM] Тимкилл: {att.Nickname} -> {vic.Nickname}");
 
-            if (_plugin.Profiles.TryGet(attacker.UserId, out var profile))
+            if (_plugin.Profiles.TryGet(att.UserId, out var prof))
             {
-                profile.TeamKillCount++;
+                prof.TeamKillCount++;
                 _plugin.ProfileStore.MarkDirty();
             }
         }
 
-        private bool HasRecentlyAttacked(Player victim)
+        private bool HasRecentlyAttacked(Player vic)
         {
-            if (!_lastDamagedAt.TryGetValue(victim.UserId, out var when)) return false;
-            return (DateTime.UtcNow - when).TotalSeconds <=
-                   _plugin.Config.AntiRdm.TeamDamageWindowSeconds;
+            if (!_lastDamagedAt.TryGetValue(vic.UserId, out var t)) return false;
+            return (DateTime.UtcNow - t).TotalSeconds <= _plugin.Config.AntiRdm.TeamDamageWindowSeconds;
         }
 
-        private static bool IsTeamKill(Player attacker, Player victim)
+        private static bool IsTeamKill(Player att, Player vic)
         {
-            if (attacker.Team == Team.Dead || victim.Team == Team.Dead) return false;
-
-            return attacker.Faction == victim.Faction
-                   && attacker.Team != Team.SCPs; // SCPs are solo, treat normally.
+            if (att.Team == Team.Dead || vic.Team == Team.Dead) return false;
+            return att.Faction == vic.Faction && att.Team != Team.SCPs;
         }
     }
 }
