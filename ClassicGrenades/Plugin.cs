@@ -38,8 +38,8 @@ namespace ClassicGrenades
         {
             if (!ev.IsAllowed) return;
 
-            bool he = ev.DamageHandler is ExplosionDamageHandler;
             bool s018 = ev.DamageHandler is Scp018DamageHandler;
+            bool he = !s018 && ev.DamageHandler is ExplosionDamageHandler;
             if (!he && !s018) return;
             if (he && !Config.BlockHe) return;
             if (s018 && !Config.Block018) return;
