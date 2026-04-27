@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text;
 using CommandSystem;
 using LabApi.Features.Wrappers;
@@ -31,12 +32,15 @@ namespace UltimateServerToolkit.Commands.Gm
         {
             error = null;
 
+            var gm = UstPlugin.Instance?.Config?.Gm;
+            if (gm != null && !gm.Enabled) { error = "GM-инструменты выключены."; return false; }
+
             var p = Player.Get(sender);
             if (p == null) return true;
             if (p.RemoteAdminAccess) return true;
 
-            var allow = UstPlugin.Instance?.Config?.Gm?.GameMasterUserIds;
-            if (allow != null && allow.Contains(p.UserId)) return true;
+            var allow = gm?.GameMasterUserIds;
+            if (allow != null && allow.Contains(p.UserId, StringComparer.OrdinalIgnoreCase)) return true;
 
             error = "Нужен Remote Admin или вайтлист GameMasterUserIds.";
             return false;
