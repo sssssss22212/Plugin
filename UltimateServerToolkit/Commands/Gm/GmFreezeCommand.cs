@@ -49,7 +49,7 @@ namespace UltimateServerToolkit.Commands.Gm
                         break;
                     }
                 }
-                if (target == null) yield break;
+                if (target == null) { Frozen.Remove(userId); yield break; }
                 target.Position = anchor;
                 yield return MEC.Timing.WaitForSeconds(0.1f);
             }

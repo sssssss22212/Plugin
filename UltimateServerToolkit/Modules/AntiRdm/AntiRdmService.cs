@@ -26,13 +26,15 @@ namespace UltimateServerToolkit.Modules.AntiRdm
 
             if (att == null || att.UserId == vic.UserId) return;
             if (!IsTeamKill(att, vic)) return;
-            if (HasRecentlyAttacked(vic))
+
+            var key = $"{att.UserId}|{vic.UserId}";
+            if (HasRecentlyAttacked(key))
             {
-                _lastDamagedAt[vic.UserId] = DateTime.UtcNow;
+                _lastDamagedAt[key] = DateTime.UtcNow;
                 return;
             }
 
-            _lastDamagedAt[vic.UserId] = DateTime.UtcNow;
+            _lastDamagedAt[key] = DateTime.UtcNow;
 
             _plugin.Karma.Penalize(att, _plugin.Config.Karma.RdmPenalty, "Тимдамаг/RDM");
 
@@ -65,9 +67,9 @@ namespace UltimateServerToolkit.Modules.AntiRdm
             }
         }
 
-        private bool HasRecentlyAttacked(Player vic)
+        private bool HasRecentlyAttacked(string key)
         {
-            if (!_lastDamagedAt.TryGetValue(vic.UserId, out var t)) return false;
+            if (!_lastDamagedAt.TryGetValue(key, out var t)) return false;
             return (DateTime.UtcNow - t).TotalSeconds <= _plugin.Config.AntiRdm.TeamDamageWindowSeconds;
         }
 
