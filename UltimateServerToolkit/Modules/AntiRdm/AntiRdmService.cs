@@ -24,13 +24,15 @@ namespace UltimateServerToolkit.Modules.AntiRdm
         {
             if (!_plugin.Config.AntiRdm.Enabled || vic == null) return;
 
-            var now = DateTime.UtcNow;
-            var recent = HasRecentlyAttacked(vic);
-            _lastDamagedAt[vic.UserId] = now;
-
             if (att == null || att.UserId == vic.UserId) return;
             if (!IsTeamKill(att, vic)) return;
-            if (recent) return;
+            if (HasRecentlyAttacked(vic))
+            {
+                _lastDamagedAt[vic.UserId] = DateTime.UtcNow;
+                return;
+            }
+
+            _lastDamagedAt[vic.UserId] = DateTime.UtcNow;
 
             _plugin.Karma.Penalize(att, _plugin.Config.Karma.RdmPenalty, "Тимдамаг/RDM");
 
