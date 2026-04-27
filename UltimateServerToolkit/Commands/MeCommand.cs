@@ -21,7 +21,7 @@ namespace UltimateServerToolkit.Commands
             if (string.IsNullOrEmpty(action)) { response = "Использование: .me <действие>"; return false; }
 
             var name = ResolveName(plugin, p);
-            var msg = plugin.Config.RpCommands.MeFormat.Replace("{name}", name).Replace("{action}", action);
+            var msg = CommandUtil.Format(plugin.Config.RpCommands.MeFormat, ("name", name), ("action", action));
 
             CommandUtil.BroadcastNearby(p, plugin.Config.RpCommands.MeRangeMeters, msg);
             plugin.RoundLog.Append($"ME {p.Nickname}: {action}");

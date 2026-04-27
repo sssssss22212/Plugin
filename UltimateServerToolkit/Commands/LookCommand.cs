@@ -25,7 +25,7 @@ namespace UltimateServerToolkit.Commands
                 ? prof.Bio
                 : "<i>Ничего особенного.</i>";
 
-            var msg = plugin.Config.RpCommands.LookFormat.Replace("{target}", name).Replace("{bio}", bio);
+            var msg = CommandUtil.Format(plugin.Config.RpCommands.LookFormat, ("target", name), ("bio", bio));
 
             try { p.SendHint(msg, 6f); } catch { }
             plugin.RoundLog.Append($"LOOK {p.Nickname} -> {target.Nickname}");

@@ -32,10 +32,8 @@ namespace UltimateServerToolkit.Commands
 
             var outcome = Outcomes[Rng.Next(Outcomes.Length)];
             var name = MeCommand.ResolveName(plugin, p);
-            var msg = plugin.Config.RpCommands.TryFormat
-                .Replace("{name}", name)
-                .Replace("{action}", action)
-                .Replace("{outcome}", outcome);
+            var msg = CommandUtil.Format(plugin.Config.RpCommands.TryFormat,
+                ("name", name), ("action", action), ("outcome", outcome));
 
             CommandUtil.BroadcastNearby(p, plugin.Config.RpCommands.MeRangeMeters, msg);
             plugin.RoundLog.Append($"TRY {p.Nickname}: {action} -> {outcome}");

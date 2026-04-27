@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using CommandSystem;
 using LabApi.Features.Wrappers;
 using UnityEngine;
@@ -21,6 +23,16 @@ namespace UltimateServerToolkit.Commands
             if (plugin == null) { error = "Плагин не загружен."; return false; }
             error = null;
             return true;
+        }
+
+        private static readonly Regex Placeholder = new Regex(@"\{([a-zA-Z_][a-zA-Z0-9_]*)\}", RegexOptions.Compiled);
+
+        public static string Format(string template, params (string key, string value)[] vars)
+        {
+            if (string.IsNullOrEmpty(template) || vars == null || vars.Length == 0) return template;
+            var map = new Dictionary<string, string>(vars.Length, StringComparer.Ordinal);
+            foreach (var v in vars) map[v.key] = v.value ?? string.Empty;
+            return Placeholder.Replace(template, m => map.TryGetValue(m.Groups[1].Value, out var s) ? s : m.Value);
         }
 
         public static string Join(ArraySegment<string> args, int startIndex = 0, int? count = null)

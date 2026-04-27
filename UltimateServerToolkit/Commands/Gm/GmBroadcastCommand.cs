@@ -88,7 +88,8 @@ namespace UltimateServerToolkit.Commands.Gm
             if (plugin == null) { response = "Плагин не инициализирован."; return false; }
 
             if (delta < 0) plugin.Karma.Penalize(target, -delta, reason);
-            else plugin.Karma.Reward(target, delta, reason);
+            else if (delta > 0) plugin.Karma.Reward(target, delta, reason);
+            else { response = "Сумма должна быть ненулевой."; return false; }
 
             response = $"Карма {target.DisplayName} изменена на {delta} ({reason}).";
             return true;

@@ -21,7 +21,7 @@ namespace UltimateServerToolkit.Commands
             if (string.IsNullOrEmpty(text)) { response = "Использование: .whisper <текст>"; return false; }
 
             var name = MeCommand.ResolveName(plugin, p);
-            var msg = plugin.Config.RpCommands.WhisperFormat.Replace("{name}", name).Replace("{message}", text);
+            var msg = CommandUtil.Format(plugin.Config.RpCommands.WhisperFormat, ("name", name), ("message", text));
 
             CommandUtil.BroadcastNearby(p, plugin.Config.RpCommands.WhisperRangeMeters, msg);
             plugin.RoundLog.Append($"WHISPER {p.Nickname}: {text}");

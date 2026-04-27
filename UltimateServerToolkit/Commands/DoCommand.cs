@@ -20,7 +20,7 @@ namespace UltimateServerToolkit.Commands
             var text = CommandUtil.Join(arguments).Trim();
             if (string.IsNullOrEmpty(text)) { response = "Использование: .do <текст>"; return false; }
 
-            var msg = plugin.Config.RpCommands.DoFormat.Replace("{action}", text);
+            var msg = CommandUtil.Format(plugin.Config.RpCommands.DoFormat, ("action", text));
             CommandUtil.BroadcastNearby(p, plugin.Config.RpCommands.MeRangeMeters, msg);
             plugin.RoundLog.Append($"DO {p.Nickname}: {text}");
 
