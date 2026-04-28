@@ -1,2 +1,9 @@
 *.agdai
 MAlonzo/**
+
+# .NET / SCP:SL plugin build artifacts
+**/bin/
+**/obj/
+*.user
+.vs/
+
