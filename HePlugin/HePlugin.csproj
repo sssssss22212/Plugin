@@ -4,8 +4,8 @@
     <TargetFramework>net48</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
-    <RootNamespace>ClassicGrenades</RootNamespace>
-    <AssemblyName>ClassicGrenades</AssemblyName>
+    <RootNamespace>HePlugin</RootNamespace>
+    <AssemblyName>HePlugin</AssemblyName>
     <Version>1.0.0</Version>
     <Description>HE/SCP-018 — гранаты не бьют тиммейтов (LabAPI 1.1.6).</Description>
     <Authors>SteamTime</Authors>

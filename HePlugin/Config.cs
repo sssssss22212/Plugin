@@ -1,4 +1,4 @@
-namespace ClassicGrenades
+namespace HePlugin
 {
     public sealed class Config
     {

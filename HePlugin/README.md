@@ -1,9 +1,9 @@
-# ClassicGrenades
+# HePlugin
 
 Маленький плагин под **SCP: Secret Laboratory** на **LabAPI 1.1.6**.
 
-Возвращает «классическое» поведение гранат: тиммейты не получают урон от своих,
-но кидавший и враги — получают всё как обычно.
+Гранаты (HE и SCP-018) не наносят урон между тиммейтами. Кидавший и враги
+получают всё как обычно.
 
 ## Что делает
 
@@ -31,11 +31,11 @@ SelfDmg: true
 ## Сборка
 
 ```bash
-dotnet build ClassicGrenades/ClassicGrenades.csproj -c Release \
+dotnet build HePlugin/HePlugin.csproj -c Release \
   -p:ScpslManagedDir=/path/to/scpsl_server/SCPSL_Data/Managed/
 ```
 
-`ClassicGrenades.dll` положить в:
+`HePlugin.dll` положить в:
 
 - Linux: `~/.config/SCP Secret Laboratory/LabAPI/plugins/global/`
 - Windows: `%appdata%\SCP Secret Laboratory\LabAPI\plugins\global\`
