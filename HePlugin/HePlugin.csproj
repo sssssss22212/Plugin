@@ -7,7 +7,7 @@
     <RootNamespace>HePlugin</RootNamespace>
     <AssemblyName>HePlugin</AssemblyName>
     <Version>1.0.0</Version>
-    <Description>HE/SCP-018 — гранаты не бьют тиммейтов (LabAPI 1.1.6).</Description>
+    <Description>Гранаты не бьют тиммейтов, но бьют кидавшего и врагов.</Description>
     <Authors>SteamTime</Authors>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
