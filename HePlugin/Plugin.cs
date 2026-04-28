@@ -9,7 +9,7 @@ namespace HePlugin
     public sealed class HePlugin : Plugin<Config>
     {
         public override string Name => "HE";
-        public override string Description => "Гранаты не бьют тиммейтов, но бьют кидавшего и врагов.";
+        public override string Description => "";
         public override string Author => "SteamTime";
         public override Version Version => new Version(1, 0, 0);
         public override Version RequiredApiVersion => new Version(1, 1, 6);

@@ -7,7 +7,6 @@
     <RootNamespace>HePlugin</RootNamespace>
     <AssemblyName>HePlugin</AssemblyName>
     <Version>1.0.0</Version>
-    <Description>Гранаты не бьют тиммейтов, но бьют кидавшего и врагов.</Description>
     <Authors>SteamTime</Authors>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
