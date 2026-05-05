@@ -18,5 +18,8 @@ namespace ClassicGrenades
 
         [Description("Блокировать HE-урон без владельца (граната без owner, например бросавший вышел).")]
         public bool BlockOrphan { get; set; } = false;
+
+        [Description("Диагностические логи в консоль.")]
+        public bool Debug { get; set; } = false;
     }
 }
