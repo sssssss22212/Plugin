@@ -1,2 +1,6 @@
 *.agdai
 MAlonzo/**
+
+# .NET build artifacts
+bin/
+obj/
